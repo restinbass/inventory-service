@@ -1,0 +1,93 @@
+syntax = "proto3";
+
+package inventory.v1;
+
+import "google/protobuf/timestamp.proto";
+import "validate/validate.proto";
+
+option go_package = "github.com/restinbass/inventory-service/proto/inventory/v1;inventory_v1";
+
+service InventoryService {
+    // GetPart - Получить информацию о детали по её UUID
+    rpc GetPart(GetPartRequest) returns (GetPartResponse);
+
+    // ListParts - Получить список деталей с возможностью фильтрации
+    rpc ListParts(ListPartsRequest) returns (ListPartsResponse);
+}
+
+// GetPartRequest - Запрос на получение информации о детали по UUID
+message GetPartRequest {
+    string part_uuid = 1 [(validate.rules).string = { uuid: true }];
+}
+
+// GetPartResponse - Ответ с информацией о детали
+message GetPartResponse {
+    Part part = 1;
+}
+
+// ListPartsRequest - Запрос на получение списка деталей по фильтру
+message ListPartsRequest {
+    PartsFilter filter = 1;
+}
+
+// ListPartsResponse - Ответ со списком деталей по фильтру
+message ListPartsResponse {
+    repeated Part parts = 1;
+}
+
+// Part - Информация о детали
+message Part {
+    string part_uuid = 1;
+    string name = 2;
+    string description = 3;
+    float price = 4;
+    int64 stock_quantity = 5;
+    Category category = 6;
+    Dimensions dimensions = 7;
+    Manufacturer manufacturer = 8;
+    repeated string tags = 9;
+    map<string, Value> metadata = 10;
+    google.protobuf.Timestamp created_at = 11;
+    google.protobuf.Timestamp updated_at = 12;
+
+    // Category - Категория детали
+    enum Category {
+        CATEGORY_UNSPECIFIED = 0;
+        CATEGORY_ENGINE = 1;
+        CATEGORY_FUEL = 2;
+        CATEGORY_PORTHOLE = 3;
+        CATEGORY_WING = 4;
+    }
+
+    // Dimensions - Размеры детали
+    message Dimensions {
+        float length = 1;
+        float width = 2;
+        float height = 3;
+        float weight = 4;
+    }
+
+    // Manufacturer - Производитель детали
+    message Manufacturer {
+        string name = 1;
+        string country = 2;
+        string website = 3;
+    }
+}
+
+// Value - Generic-значение любого типа
+message Value {
+    string string_value = 1;
+    int64 int_value = 2;
+    float double_value = 3;
+    bool bool_value = 4;
+}
+
+// PartsFilter - Фильтр по деталям
+message PartsFilter {
+    repeated string uuids = 1 [(validate.rules).repeated = { items: { string: { uuid: true } } }];
+    repeated string names = 2 [(validate.rules).repeated = { items: { string: { min_len: 1 } }, min_items: 1 }];
+    repeated Part.Category categories = 3;
+    repeated string manufacturer_countries = 4 [(validate.rules).repeated = { items: { string: { min_len: 1 } }, min_items: 1 }];
+    repeated string tags = 5 [(validate.rules).repeated = { items: { string: { min_len: 1 } }, min_items: 1 }];
+}

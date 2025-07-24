@@ -1,0 +1,228 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "inventory/v1/inventory.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "InventoryService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {},
+  "definitions": {
+    "PartCategory": {
+      "type": "string",
+      "enum": [
+        "CATEGORY_UNSPECIFIED",
+        "CATEGORY_ENGINE",
+        "CATEGORY_FUEL",
+        "CATEGORY_PORTHOLE",
+        "CATEGORY_WING"
+      ],
+      "default": "CATEGORY_UNSPECIFIED",
+      "title": "Category - Категория детали"
+    },
+    "PartDimensions": {
+      "type": "object",
+      "properties": {
+        "length": {
+          "type": "number",
+          "format": "float"
+        },
+        "width": {
+          "type": "number",
+          "format": "float"
+        },
+        "height": {
+          "type": "number",
+          "format": "float"
+        },
+        "weight": {
+          "type": "number",
+          "format": "float"
+        }
+      },
+      "title": "Dimensions - Размеры детали"
+    },
+    "PartManufacturer": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "website": {
+          "type": "string"
+        }
+      },
+      "title": "Manufacturer - Производитель детали"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1GetPartResponse": {
+      "type": "object",
+      "properties": {
+        "part": {
+          "$ref": "#/definitions/v1Part"
+        }
+      },
+      "title": "GetPartResponse - Ответ с информацией о детали"
+    },
+    "v1ListPartsResponse": {
+      "type": "object",
+      "properties": {
+        "parts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Part"
+          }
+        }
+      },
+      "title": "ListPartsResponse - Ответ со списком деталей по фильтру"
+    },
+    "v1Part": {
+      "type": "object",
+      "properties": {
+        "part_uuid": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "price": {
+          "type": "number",
+          "format": "float"
+        },
+        "stock_quantity": {
+          "type": "string",
+          "format": "int64"
+        },
+        "category": {
+          "$ref": "#/definitions/PartCategory"
+        },
+        "dimensions": {
+          "$ref": "#/definitions/PartDimensions"
+        },
+        "manufacturer": {
+          "$ref": "#/definitions/PartManufacturer"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/v1Value"
+          }
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "Part - Информация о детали"
+    },
+    "v1PartsFilter": {
+      "type": "object",
+      "properties": {
+        "uuids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "names": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "categories": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PartCategory"
+          }
+        },
+        "manufacturer_countries": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "title": "PartsFilter - Фильтр по деталям"
+    },
+    "v1Value": {
+      "type": "object",
+      "properties": {
+        "string_value": {
+          "type": "string"
+        },
+        "int_value": {
+          "type": "string",
+          "format": "int64"
+        },
+        "double_value": {
+          "type": "number",
+          "format": "float"
+        },
+        "bool_value": {
+          "type": "boolean"
+        }
+      },
+      "title": "Value - Generic-значение любого типа"
+    }
+  }
+}
